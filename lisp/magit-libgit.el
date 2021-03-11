@@ -73,6 +73,58 @@ If optional DIRECTORY is nil, then use `default-directory'."
          (unless noerror
            (signal 'magit-outside-git-repo default-directory)))))
 
+(cl-defmethod magit-get-current-branch
+  (&context ((magit-gitimpl) (eql libgit)))
+  (when-let ((repo (magit-libgit-repo))
+             (ref (libgit-reference-dwim repo "HEAD")))
+    (when (libgit-reference-branch-p ref)
+      (libgit-reference-shorthand ref))))
+
+(cl-defmethod magit-revparse-single
+  (rev &context ((magit-gitimpl) (eql libgit)) &optional symbolic-full-name)
+  (when-let ((repo (magit-libgit-repo))
+             (ref (libgit-revparse-single repo rev)))
+    (if symbolic-full-name
+        (libgit-commit-id ref)
+      (libgit-commit-id ref))))
+
+;; (magit-revparse-single "HEAD" t)
+;; (magit-revparse-single "HEAD")
+
+;; (magit-git-string "rev-parse" "HEAD")
+;; (magit-git-string "rev-parse" "libgit2")
+
+;; (magit-gitimpl)
+
+
+;; (magit-get-current-branch)
+;; (magit-git-string "rev-parse" "--symbolic-full-name" (magit-get-current-branch))
+;; (magit-git-string-p "rev-parse" "--verify" rev)
+;; (magit-git-string "rev-parse" "HEAD")
+
+
+;;       (let* ((repo (libgit-repository-open path)))
+;;         (should (string= c3 (libgit-commit-id (libgit-revparse-single repo "HEAD"))))
+;;         (should (string= c2 (libgit-commit-id (libgit-revparse-single repo "HEAD~"))))
+;;         (should (string= c2 (libgit-commit-id (libgit-revparse-single repo "HEAD^"))))
+;;         (should (string= (libgit-commit-tree-id (libgit-commit-lookup repo c1))
+;;                          (libgit-tree-id (libgit-revparse-single repo "HEAD~2^{tree}"))))
+;;         (let ((res (libgit-revparse-ext repo "HEAD")))
+;;           (should (string= c3 (libgit-commit-id (car res))))
+;;           (should (libgit-reference-p (cdr res)))
+;;           (should (string= "refs/heads/master" (libgit-reference-name (cdr res)))))
+;;         (let ((res (libgit-revparse-ext repo c1)))
+;;           (should (string= c1 (libgit-commit-id (car res))))
+;;           (should-not (cdr res)))
+;;         (let ((res (libgit-revparse repo (format "%s..HEAD" c1))))
+;;           (should-not (car res))
+;;           (should (string= c1 (libgit-commit-id (cadr res))))
+;;           (should (string= c3 (libgit-commit-id (caddr res)))))
+;;         (let ((res (libgit-revparse repo (format "%s...%s" c1 c2))))
+;;           (should (car res))
+;;           (should (string= c1 (libgit-commit-id (cadr res))))
+;;           (should (string= c2 (libgit-commit-id (caddr res)))))))))
+
 ;;; _
 (provide 'magit-libgit)
 ;;; magit-libgit.el ends here
