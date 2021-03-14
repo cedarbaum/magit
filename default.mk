@@ -20,11 +20,14 @@ infodir  ?= $(sharedir)/info
 docdir   ?= $(sharedir)/doc/magit
 statsdir ?= $(TOP)/Documentation/stats
 
+CD       ?= cd
 CP       ?= install -p -m 644
 MKDIR    ?= install -p -m 755 -d
 RMDIR    ?= rm -rf
 TAR      ?= tar
 SED      ?= sed
+GIT      ?= git
+CMAKE    ?= cmake
 
 EMACSBIN ?= emacs
 BATCH     = $(EMACSBIN) -Q --batch $(LOAD_PATH)
@@ -34,6 +37,7 @@ MAKEINFO         ?= makeinfo
 MANUAL_HTML_ARGS ?= --css-ref /assets/page.css
 
 BUILD_MAGIT_LIBGIT ?= true
+LIBGIT_GIT_URL     ?= https://github.com/magit/libegit2.git
 
 ## Files #############################################################
 
@@ -139,7 +143,7 @@ USER_EMACS_DIR = $(HOME)/.emacs.d
 ifeq "$(wildcard $(USER_EMACS_DIR))" ""
   XDG_CONFIG_DIR = $(or $(XDG_CONFIG_HOME),$(HOME)/.config)
   ifneq "$(wildcard $(XDG_CONFIG_DIR)/emacs)" ""
-    USER_EMACS_DIR = $(XDG_CONFIG_DIR)/emacs
+	USER_EMACS_DIR = $(XDG_CONFIG_DIR)/emacs
   endif
 endif
 

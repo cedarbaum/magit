@@ -8,7 +8,8 @@ include default.mk
 	test test-interactive magit \
 	clean clean-lisp clean-docs clean-archives \
 	stats bump-version melpa-post-release \
-	dist versionlib magit-$(VERSION).tar.gz
+	dist versionlib magit-$(VERSION).tar.gz \
+	ensure-libgit
 
 all: lisp docs
 
@@ -51,6 +52,7 @@ help:
 	$(info )
 	$(info make test             - run tests)
 	$(info make test-interactive - run tests interactively)
+	$(info make test-in-ci -     - run tests in CI environment)
 	$(info make emacs-Q          - run emacs -Q plus Magit)
 	$(info )
 	$(info Release Management)
@@ -115,6 +117,23 @@ test-interactive:
 	@$(EMACSBIN) -Q $(LOAD_PATH) --eval "(progn\
 	(load-file \"t/magit-tests.el\")\
 	(ert t))"
+
+--ensure-libgit:
+	@if [ ! -d $(LIBGIT_DIR) ]; then \
+		$(CD) $(TOP).. && $(GIT) clone $(LIBGIT_GIT_URL) libgit; \
+	fi
+
+	@$(CD) $(LIBGIT_DIR) && \
+	$(GIT) submodule update --init && \
+	$(MKDIR) build && \
+	$(CD) build && $(CMAKE) .. $(LIBGIT_BUILD_OPTIONS) && $(MAKE)
+
+test-in-ci: --ensure-libgit
+	@$(BATCH) --eval "(progn\
+		$$suppress_warnings\
+	(setq magit--ensure-libgit-tests-run t)\
+	(load-file \"t/magit-tests.el\")\
+	(ert-run-tests-batch-and-exit))"
 
 emacs-Q: clean-lisp
 	@$(EMACSBIN) -Q $(LOAD_PATH) --debug-init --eval "(progn\

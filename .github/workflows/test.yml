@@ -38,4 +38,4 @@ jobs:
         make lisp DASH_DIR=$PWD
     - name: Test
       run: |
-        make test DASH_DIR=$PWD
+        make test-in-ci DASH_DIR=$PWD
