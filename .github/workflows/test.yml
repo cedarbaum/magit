@@ -38,6 +38,8 @@ jobs:
         which openssl
         ls /usr/lib/x86_64-linux-gnu | grep libssl
 
+        export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+
         pwd
         git clone https://github.com/magit/libegit2.git ../libgit
         cd ../libgit
@@ -51,7 +53,9 @@ jobs:
         git tag 0
     - name: Compile
       run: |
+        export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
         make lisp DASH_DIR=$PWD
     - name: Test
       run: |
+        export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
         make test-in-ci DASH_DIR=$PWD
