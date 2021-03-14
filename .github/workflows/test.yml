@@ -31,8 +31,8 @@ jobs:
         emacs --version
 
         pwd
-        git clone https://github.com/magit/libegit2.git libgit
-        cd libgit
+        git clone https://github.com/magit/libegit2.git ../libgit
+        cd ../libgit
         git submodule update --init
         mkdir build
         cd build && cmake .. && make

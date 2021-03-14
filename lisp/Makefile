@@ -75,7 +75,7 @@ versionlib: $(PKG)-version.el
 
 %.elc: %.el
 	@printf "Compiling $<\n"
-	@$(BATCH) --eval "(progn\
+	$(BATCH) --eval "(progn\
 	(when (file-exists-p \"$@\")\
 	  (delete-file \"$@\"))\
 	(setq with-editor-emacsclient-executable nil)\
