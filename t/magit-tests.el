@@ -391,6 +391,7 @@ Enter passphrase for key '/home/user/.ssh/id_rsa': "
 (magit-deftest-with-git-and-libgit magit-in-bare-repo ()
   "Test `magit-bare-repo-p' in a bare repository."
   (magit-with-test-repository-custom-init '("--bare")
+    (should (eq 'libgit (magit-gitimpl)))
     (should (magit-bare-repo-p))))
 
 (magit-deftest-with-git-and-libgit magit-in-non-bare-repo ()
