@@ -3,6 +3,7 @@ on: [ push, pull_request ]
 env:
   CURL: "curl -fsSkL --retry 9 --retry-delay 9"
   GHRAW: "https://raw.githubusercontent.com"
+  OPENSSL_SSL_LIBRARY: "/usr/lib/x86_64-linux-gnu"
 jobs:
   test:
     runs-on: ubuntu-20.04
