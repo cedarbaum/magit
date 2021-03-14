@@ -17,7 +17,7 @@ jobs:
         # - 26.1   # Debian is on this version.
         # - 26.3
         - 27.1
-        - snapshot
+        # - snapshot
     steps:
     - uses: purcell/setup-emacs@master
       with:
@@ -48,8 +48,9 @@ jobs:
         git tag 0
     - name: Compile
       run: |
-        ldd emacs
+        ldconfig -p | grep libc6
         export LD_LIBRARY_PATH=/lib:/usr/lib:/usr/local/lib:/lib/x86_64-linux-gnu/:/usr/lib/x86_64-linux-gnu/
+        ldconfig -p | grep libc6
         which openssl
         ldd /usr/bin/openssl
         echo 'USR/LIB'
