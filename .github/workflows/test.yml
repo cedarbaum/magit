@@ -3,7 +3,6 @@ on: [ push, pull_request ]
 env:
   CURL: "curl -fsSkL --retry 9 --retry-delay 9"
   GHRAW: "https://raw.githubusercontent.com"
-  BUILD_MAGIT_LIBGIT: "false"
 jobs:
   test:
     runs-on: ubuntu-20.04
@@ -30,6 +29,15 @@ jobs:
         $CURL -O ${GHRAW}/magit/with-editor/master/with-editor.el
         emacs -Q --batch -L . -f batch-byte-compile dash.el transient.el with-editor.el
         emacs --version
+
+        pwd
+        git clone https://github.com/magit/libegit2.git libgit
+        cd libgit
+        git submodule update --init
+        mkdir build
+        cd build && cmake .. && make
+        pwd
+
         git config --global user.name "A U Thor"
         git config --global user.email a.u.thor@example.com
         git tag 0

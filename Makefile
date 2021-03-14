@@ -9,7 +9,6 @@ include default.mk
 	clean clean-lisp clean-docs clean-archives \
 	stats bump-version melpa-post-release \
 	dist versionlib magit-$(VERSION).tar.gz \
-	ensure-libgit
 
 all: lisp docs
 
@@ -128,7 +127,7 @@ test-interactive:
 	$(MKDIR) build && \
 	$(CD) build && $(CMAKE) .. $(LIBGIT_BUILD_OPTIONS) && $(MAKE)
 
-test-in-ci: --ensure-libgit
+test-in-ci:
 	@$(BATCH) --eval "(progn\
 		$$suppress_warnings\
 	(setq magit--ensure-libgit-tests-run t)\
