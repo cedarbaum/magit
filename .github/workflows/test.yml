@@ -53,7 +53,7 @@ jobs:
         git tag 0
     - name: Compile
       run: |
-        export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/lib/x86_64-linux-gnu
+        export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu
         echo ${LD_LIBRARY_PATH}
         make lisp DASH_DIR=$PWD
     - name: Test
