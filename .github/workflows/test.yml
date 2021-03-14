@@ -32,6 +32,11 @@ jobs:
 
         sudo apt-get install libssl-dev
         sudo apt-get install -y libssl1.1
+
+        openssl version
+        which openssl
+        ls /usr/lib/x86_64-linux-gnu | grep libssl
+
         pwd
         git clone https://github.com/magit/libegit2.git ../libgit
         cd ../libgit
