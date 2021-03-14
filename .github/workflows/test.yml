@@ -48,6 +48,7 @@ jobs:
         git tag 0
     - name: Compile
       run: |
+        ldd emacs
         export LD_LIBRARY_PATH=/lib:/usr/lib:/usr/local/lib:/lib/x86_64-linux-gnu/:/usr/lib/x86_64-linux-gnu/
         which openssl
         ldd /usr/bin/openssl
