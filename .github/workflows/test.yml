@@ -53,8 +53,13 @@ jobs:
         git tag 0
     - name: Compile
       run: |
+        ldconfig -v -N | grep '^/'
+
         export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu
         echo ${LD_LIBRARY_PATH}
+
+        ldconfig -v -N | grep '^/'
+
         make lisp DASH_DIR=$PWD
     - name: Test
       run: |
