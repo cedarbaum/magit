@@ -6,7 +6,7 @@ env:
   OPENSSL_SSL_LIBRARY: "/usr/lib/x86_64-linux-gnu"
 jobs:
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-20.10
     strategy:
       matrix:
         emacs_version:
