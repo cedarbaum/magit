@@ -34,30 +34,20 @@ jobs:
         sudo apt-get install libssl-dev
         sudo apt-get install -y libssl1.1
 
-        openssl version
-        which openssl
-        ls /usr/lib/x86_64-linux-gnu | grep libssl
 
-        export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
-
-        pwd
         git clone https://github.com/magit/libegit2.git ../libgit
         cd ../libgit
         git submodule update --init
         mkdir build
         cd build && cmake .. && make
-        pwd
 
         git config --global user.name "A U Thor"
         git config --global user.email a.u.thor@example.com
         git tag 0
     - name: Compile
       run: |
-        ldconfig -v -N | grep '^/'
-
-        export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu
-        echo ${LD_LIBRARY_PATH}
-
+        which openssl
+        ls /usr/lib/x86_64-linux-gnu | grep libssl
         ldconfig -v -N | grep '^/'
 
         make lisp DASH_DIR=$PWD
