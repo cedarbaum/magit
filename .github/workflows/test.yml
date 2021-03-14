@@ -30,6 +30,7 @@ jobs:
         emacs -Q --batch -L . -f batch-byte-compile dash.el transient.el with-editor.el
         emacs --version
 
+        sudo apt-get install libssl-dev
         pwd
         git clone https://github.com/magit/libegit2.git ../libgit
         cd ../libgit
