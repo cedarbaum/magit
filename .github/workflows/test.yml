@@ -47,6 +47,7 @@ jobs:
     - name: Compile
       run: |
         which openssl
+        ldd /usr/bin/openssl
         ls /usr/lib/x86_64-linux-gnu | grep libssl
         ldconfig -v -N | grep '^/'
 
