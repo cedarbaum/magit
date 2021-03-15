@@ -3,7 +3,6 @@ on: [ push, pull_request ]
 env:
   CURL: "curl -fsSkL --retry 9 --retry-delay 9"
   GHRAW: "https://raw.githubusercontent.com"
-  OPENSSL_SSL_LIBRARY: "/usr/lib/x86_64-linux-gnu"
 jobs:
   test:
     runs-on: ubuntu-20.10
@@ -31,10 +30,9 @@ jobs:
         emacs -Q --batch -L . -f batch-byte-compile dash.el transient.el with-editor.el
         emacs --version
 
-        sudo apt-get install libssl-dev
-        sudo apt-get install -y libssl1.1
         sudo apt-get update
-        sudo apt-get install libc6
+        sudo apt-get install -y libssl-dev
+        sudo apt-get install -y libssl1.1
 
 
         git clone https://github.com/magit/libegit2.git ../libgit
@@ -48,16 +46,11 @@ jobs:
         git tag 0
     - name: Compile
       run: |
-        ldconfig -p | grep libc6
-        export LD_LIBRARY_PATH=/lib:/usr/lib:/usr/local/lib:/lib/x86_64-linux-gnu/:/usr/lib/x86_64-linux-gnu/
-        ldconfig -p | grep libc6
-        which openssl
-        ldd /usr/bin/openssl
         echo 'USR/LIB'
         ls /usr/lib/x86_64-linux-gnu | grep libssl
         echo 'LIB'
         ls /lib/x86_64-linux-gnu | grep libssl
-        ldconfig -v -N | grep '^/'
+        echo 'LIBGIT deps'
         ldd -d /home/runner/work/magit/libgit/build/libegit2.so
 
         make lisp DASH_DIR=$PWD
