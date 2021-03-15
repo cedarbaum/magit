@@ -5,7 +5,7 @@ env:
   GHRAW: "https://raw.githubusercontent.com"
 jobs:
   test:
-    runs-on: ubuntu-20.10
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         emacs_version:
