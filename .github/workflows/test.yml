@@ -53,6 +53,8 @@ jobs:
         echo 'LIBGIT deps'
         ldd -d /home/runner/work/magit/libgit/build/libegit2.so
 
+        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/lib/x86_64-linux-gnu/
+
         make lisp DASH_DIR=$PWD
     - name: Test
       run: |
