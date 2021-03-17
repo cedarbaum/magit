@@ -53,7 +53,13 @@ jobs:
         echo 'LIBGIT deps'
         ldd -d /home/runner/work/magit/libgit/build/libegit2.so
 
+        echo 'BEFORE LD_LIBRARY_PATH'
+        ldd -v $(which emacs) | grep libc.so.6
+
         export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/lib/x86_64-linux-gnu/
+
+        echo 'AFTER LD_LIBRARY_PATH'
+        ldd -v $(which emacs) | grep libc.so.6
 
         make lisp DASH_DIR=$PWD
     - name: Test
