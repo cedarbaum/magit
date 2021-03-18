@@ -18,7 +18,7 @@ jobs:
         - 27.1
         # - snapshot
     steps:
-    - uses: purcell/setup-emacs@master
+    - uses: cedarbaum/setup-emacs@build-libgit
       with:
         version: ${{ matrix.emacs_version }}
     - uses: actions/checkout@v2
@@ -30,37 +30,11 @@ jobs:
         emacs -Q --batch -L . -f batch-byte-compile dash.el transient.el with-editor.el
         emacs --version
 
-        sudo apt-get update
-        sudo apt-get install -y libssl-dev
-        sudo apt-get install -y libssl1.1
-        sudo apt-get install libc6
-
-        git clone https://github.com/magit/libegit2.git ../libgit
-        cd ../libgit
-        git submodule update --init
-        mkdir build
-        cd build && cmake .. && make
-
         git config --global user.name "A U Thor"
         git config --global user.email a.u.thor@example.com
         git tag 0
     - name: Compile
       run: |
-        echo 'USR/LIB'
-        ls /usr/lib/x86_64-linux-gnu | grep libssl
-        echo 'LIB'
-        ls /lib/x86_64-linux-gnu | grep libssl
-        echo 'LIBGIT deps'
-        ldd -d /home/runner/work/magit/libgit/build/libegit2.so
-
-        echo 'BEFORE LD_LIBRARY_PATH'
-        ldd -v $(which emacs) | grep libc.so.6
-
-        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/lib/x86_64-linux-gnu/
-
-        echo 'AFTER LD_LIBRARY_PATH'
-        ldd -v $(which emacs) | grep libc.so.6
-
         make lisp DASH_DIR=$PWD
     - name: Test
       run: |
