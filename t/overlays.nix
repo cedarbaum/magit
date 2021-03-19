@@ -1,5 +1,14 @@
-{ config, pkgs, lib, ... }:
+let overlay1 = self: super:
 {
-   # [...]
-   nixpkgs.overlays = [ (self: super: /* overlay goes here */) ];
-}
+  (pkgs.emacsPackagesFor self).emacsWithPackages (
+    epkgs: [
+      epkgs.seq
+      epkgs.dash
+      epkgs.transient
+    ] ++ (with epkgs.melpaPackages; [
+      libgit
+      with-editor
+    ])
+  )
+};
+
