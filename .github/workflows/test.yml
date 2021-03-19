@@ -18,6 +18,7 @@ jobs:
         # - 27.1
         - snapshot
     steps:
+    - uses: actions/checkout@v2
     - name: Apply Nix packages
       run: |
         pwd
@@ -28,7 +29,6 @@ jobs:
     - uses: cedarbaum/setup-emacs@build-libgit
       with:
         version: ${{ matrix.emacs_version }}
-    - uses: actions/checkout@v2
     - name: Install
       run: |
         $CURL -O ${GHRAW}/magnars/dash.el/master/dash.el
