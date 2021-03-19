@@ -20,6 +20,8 @@ jobs:
     steps:
     - name: Apply Nix packages
       run: |
+        pwd
+        ll
         mkdir -p ~/.config/nixpkgs/
         cp ./t/overlays.nix ~/.config/nixpkgs/
     - uses: cedarbaum/setup-emacs@build-libgit
