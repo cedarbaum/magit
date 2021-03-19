@@ -23,7 +23,7 @@ jobs:
         pwd
         ls -l
         mkdir -p ~/.config/nixpkgs/
-        ls -l ./tt
+        ls -l ./t
         cp ./t/overlays.nix ~/.config/nixpkgs/
     - uses: cedarbaum/setup-emacs@build-libgit
       with:
