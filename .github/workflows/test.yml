@@ -28,10 +28,12 @@ jobs:
         nix-env -iA cachix -f https://cachix.org/api/v1/install
         cachix use emacs-ci
 
+        # Build and install Emacs (+ magit dependencies) using Nix
         emacs_ci_version=$(echo "emacs-${{ matrix.emacs_version }}" | sed -e "s/\./-/g")
         nix-env -f ./t/default.nix -iA $emacs_ci_version
-
         emacs --version
+
+        # Configure Git
         git config --global user.name "A U Thor"
         git config --global user.email a.u.thor@example.com
         git tag 0
