@@ -28,7 +28,8 @@ jobs:
         nix-env -iA cachix -f https://cachix.org/api/v1/install
         cachix use emacs-ci
 
-        nix-env -f ./t/default.nix -iA emacs-${{ matrix.emacs_version }}
+        emacs_ci_version = "emacs-${{ matrix.emacs_version }}" | sed -e "s/\./-/g"
+        nix-env -f ./t/default.nix -iA $emacs_ci_version
 
         emacs --version
         git config --global user.name "A U Thor"
