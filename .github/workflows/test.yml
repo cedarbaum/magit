@@ -18,23 +18,16 @@ jobs:
         # - 27.1
         - snapshot
     steps:
+    - uses: cachix/install-nix-action@v12
     - uses: actions/checkout@v2
-    - name: Apply Nix packages
-      run: |
-        pwd
-        ls -l
-        mkdir -p ~/.config/nixpkgs/
-        ls -l ./t
-        cp ./t/overlays.nix ~/.config/nixpkgs/
-    - uses: cedarbaum/setup-emacs@build-libgit
-      with:
-        version: ${{ matrix.emacs_version }}
     - name: Install
       run: |
-        $CURL -O ${GHRAW}/magnars/dash.el/master/dash.el
-        $CURL -O ${GHRAW}/magit/transient/master/lisp/transient.el
-        $CURL -O ${GHRAW}/magit/with-editor/master/with-editor.el
-        emacs -Q --batch -L . -f batch-byte-compile dash.el transient.el with-editor.el
+        # Enable cachix 
+        nix-env -iA cachix -f https://cachix.org/api/v1/install
+        cachix use emacs-ci
+
+        nix-env -f ./t/default.nix -iA ${{ matrix.emacs_version }}
+
         emacs --version
         git config --global user.name "A U Thor"
         git config --global user.email a.u.thor@example.com
