@@ -76,9 +76,8 @@ If optional DIRECTORY is nil, then use `default-directory'."
 (cl-defmethod magit-get-current-branch
   (&context ((magit-gitimpl) (eql libgit)))
   (when-let ((repo (magit-libgit-repo))
-             (ref (libgit-reference-dwim repo "HEAD")))
-    (when (libgit-reference-branch-p ref)
-      (libgit-reference-shorthand ref))))
+             (head (libgit-repository-head repo)))
+    (libgit-reference-shorthand head)))
 
 (cl-defmethod magit-revparse-single
   (rev &context ((magit-gitimpl) (eql libgit)) &optional symbolic-full-name)
@@ -87,6 +86,10 @@ If optional DIRECTORY is nil, then use `default-directory'."
     (if symbolic-full-name
         (libgit-commit-id ref)
       (libgit-commit-id ref))))
+
+(magit-gitimpl)
+(magit-bare-repo-p)
+(magit-get-current-branch)
 
 ;; (magit-revparse-single "HEAD" t)
 ;; (magit-revparse-single "HEAD")

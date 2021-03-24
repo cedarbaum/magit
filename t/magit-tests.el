@@ -32,7 +32,7 @@
        (push "GIT_AUTHOR_EMAIL=a.u.thor@example.com" process-environment)
        (condition-case err
            (cl-letf (((symbol-function #'message) (lambda (&rest _))))
-             (let ((default-directory ,dir))
+             (let ((default-directory (file-truename ,dir)))
                ,@body))
          (error (message "Keeping test directory:\n  %s" ,dir)
                 (signal (car err) (cdr err))))
@@ -95,7 +95,7 @@ implementation can easily be differentiated."
 
 ;;; Git
 
-(magit-deftest-with-git magit--with-safe-default-directory ()
+(magit-deftest-with-git-and-libgit magit--with-safe-default-directory ()
   (magit-with-test-directory
     (let ((find-file-visit-truename nil))
       (should (equal (magit-toplevel "repo/")
@@ -103,7 +103,7 @@ implementation can easily be differentiated."
       (should (equal (magit-toplevel "repo")
                      (magit-toplevel (expand-file-name "repo/")))))))
 
-(magit-deftest-with-git magit-toplevel:basic ()
+(magit-deftest-with-git-and-libgit magit-toplevel:basic ()
   (let ((find-file-visit-truename nil))
     (magit-with-test-directory
       (magit-test-init-repo "repo")
@@ -122,7 +122,7 @@ implementation can easily be differentiated."
                      ;; But in the doc-string we say we cannot do it.
                      (expand-file-name "repo/"))))))
 
-(magit-deftest-with-git magit-toplevel:tramp ()
+(magit-deftest-with-git-and-libgit magit-toplevel:tramp ()
   (cl-letf* ((find-file-visit-truename nil)
              ;; Override tramp method so that we don't actually
              ;; require a functioning `sudo'.
@@ -147,7 +147,7 @@ implementation can easily be differentiated."
      (should (equal (magit-toplevel   "repo-link/.git/objects/")
                     (expand-file-name "repo/"))))))
 
-(magit-deftest-with-git magit-toplevel:submodule ()
+(magit-deftest-with-git-and-libgit magit-toplevel:submodule ()
   (let ((find-file-visit-truename nil))
     (magit-with-test-directory
       (magit-test-init-repo "remote")
@@ -214,7 +214,7 @@ implementation can easily be differentiated."
   (should (equal (magit-get "CAM.El.Case.VAR") "value"))
   (should (equal (magit-get "a.b2") "line1\nline2")))
 
-(magit-deftest-with-git magit-get ()
+(magit-deftest-with-git-and-libgit magit-get ()
   (magit-with-test-directory
    (magit-test-init-repo "remote")
    (let ((default-directory (expand-file-name "remote/")))
@@ -237,7 +237,7 @@ implementation can easily be differentiated."
    (let ((magit--refresh-cache (list (cons 0 0))))
      (magit-test-magit-get))))
 
-(magit-deftest-with-git magit-get-boolean ()
+(magit-deftest-with-git-and-libgit magit-get-boolean ()
   (magit-with-test-repository
     (magit-git "config" "a.b" "true")
     (should     (magit-get-boolean "a.b"))
@@ -251,7 +251,7 @@ implementation can easily be differentiated."
     (let ((magit--refresh-cache (list (cons 0 0))))
      (should    (magit-get-boolean "a.b")))))
 
-(magit-deftest-with-git magit-get-{current|next}-tag ()
+(magit-deftest-with-git-and-libgit magit-get-{current|next}-tag ()
   (magit-with-test-repository
     (magit-git "commit" "-m" "1" "--allow-empty")
     (should (equal (magit-get-current-tag) nil))
@@ -272,7 +272,7 @@ implementation can easily be differentiated."
     (should (equal (magit-get-current-tag) "2"))
     (should (equal (magit-get-next-tag)    "4"))))
 
-(magit-deftest-with-git magit-list-{|local-|remote-}branch-names ()
+(magit-deftest-with-git-and-libgit magit-list-{|local-|remote-}branch-names ()
   (magit-with-test-repository
     (magit-git "commit" "-m" "init" "--allow-empty")
     (magit-git "update-ref" "refs/remotes/foobar/master" "master")
@@ -288,27 +288,27 @@ implementation can easily be differentiated."
     (should (equal (magit-list-remote-branch-names "origin" t)
                    (list "master")))))
 
-(magit-deftest-with-git magit-process:match-prompt-nil-when-no-match ()
+(magit-deftest-with-git-and-libgit magit-process:match-prompt-nil-when-no-match ()
   (should (null (magit-process-match-prompt '("^foo: ?$") "bar: "))))
 
-(magit-deftest-with-git magit-process:match-prompt-non-nil-when-match ()
+(magit-deftest-with-git-and-libgit magit-process:match-prompt-non-nil-when-match ()
   (should (magit-process-match-prompt '("^foo: ?$") "foo: ")))
 
-(magit-deftest-with-git magit-process:match-prompt-match-non-first-prompt ()
+(magit-deftest-with-git-and-libgit magit-process:match-prompt-match-non-first-prompt ()
   (should (magit-process-match-prompt '("^bar: ?$ " "^foo: ?$") "foo: ")))
 
-(magit-deftest-with-git magit-process:match-prompt-suffixes-prompt ()
+(magit-deftest-with-git-and-libgit magit-process:match-prompt-suffixes-prompt ()
   (let ((prompts '("^foo: ?$")))
     (should (equal (magit-process-match-prompt prompts "foo:")  "foo: "))
     (should (equal (magit-process-match-prompt prompts "foo: ") "foo: "))))
 
-(magit-deftest-with-git magit-process:match-prompt-preserves-match-group ()
+(magit-deftest-with-git-and-libgit magit-process:match-prompt-preserves-match-group ()
   (let* ((prompts '("^foo '\\(?99:.*\\)': ?$"))
          (prompt (magit-process-match-prompt prompts "foo 'bar':")))
     (should (equal prompt "foo 'bar': "))
     (should (equal (match-string 99 "foo 'bar':") "bar"))))
 
-(magit-deftest-with-git magit-process:password-prompt ()
+(magit-deftest-with-git-and-libgit magit-process:password-prompt ()
   (let ((magit-process-find-password-functions
          (list (lambda (host) (when (string= host "www.host.com") "mypasswd")))))
     (cl-letf (((symbol-function 'process-send-string)
@@ -317,7 +317,7 @@ implementation can easily be differentiated."
                              nil "Password for 'www.host.com':")
                             "mypasswd\n")))))
 
-(magit-deftest-with-git magit-process:password-prompt-observed ()
+(magit-deftest-with-git-and-libgit magit-process:password-prompt-observed ()
   (with-temp-buffer
     (cl-letf* ((test-proc (start-process
                            "dummy-proc" (current-buffer)
@@ -348,7 +348,7 @@ Enter passphrase for key '/home/user/.ssh/id_rsa': "
            (oref (magit-get-section `(,list (status)))
                  children)))
 
-(magit-deftest-with-git magit-status:file-sections ()
+(magit-deftest-with-git-and-libgit magit-status:file-sections ()
   (magit-with-test-repository
     (cl-flet ((modify (file) (with-temp-file file
                                (insert (make-temp-name "content")))))
@@ -370,7 +370,7 @@ Enter passphrase for key '/home/user/.ssh/id_rsa': "
       (should (magit-test-get-section '(unstaged) "file with space"))
       (should (magit-test-get-section '(unstaged) "file with äöüéλ")))))
 
-(magit-deftest-with-git magit-status:log-sections ()
+(magit-deftest-with-git-and-libgit magit-status:log-sections ()
   (magit-with-test-repository
     (magit-git "commit" "-m" "common" "--allow-empty")
     (magit-git "commit" "-m" "unpulled" "--allow-empty")
@@ -397,6 +397,11 @@ Enter passphrase for key '/home/user/.ssh/id_rsa': "
   "Test `magit-bare-repo-p' in a non-bare repository."
   (magit-with-test-repository
       (should-not (magit-bare-repo-p))))
+
+(magit-deftest-with-git-and-libgit magit-get-current-branch ()
+  ""
+  (magit-with-test-repository
+    (should (equal "master" (magit-get-current-branch)))))
 
 ;;; Utils
 
