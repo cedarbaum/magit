@@ -116,7 +116,7 @@ test-libgit:
 	@$(BATCH) --eval "(progn\
 		$$suppress_warnings\
     (require 'magit)\
-	(unless (eq 'git (magit-gitimpl))\
+	(unless (eq 'libgit (magit-gitimpl))\
 	  (message \"libgit not available.\")\
 	  (kill-emacs 1))\
 	(load-file \"t/magit-tests.el\")\
