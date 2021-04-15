@@ -18,7 +18,9 @@ jobs:
         - 26.3
         - 27.1
         - snapshot
-        use_libgit: [true, false]
+        git_impl:
+        - git
+        - libgit
     steps:
     - uses: purcell/setup-emacs@master
       with:
@@ -38,10 +40,10 @@ jobs:
       run: |
         make lisp DASH_DIR=$PWD
     - name: Test
-      if: ${{ !matrix.use_libgit }}
+      if: ${{ matrix.git_impl == 'git' }}
       run: |
         make test DASH_DIR=$PWD
     - name: Test with libgit
-      if: matrix.use_libgit
+      if: ${{ matrix.git_impl == 'libgit' }}
       run: |
         make test-libgit DASH_DIR=$PWD
